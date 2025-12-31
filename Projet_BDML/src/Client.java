@@ -80,6 +80,8 @@ public class Client {
         this.mail_client = mail_client;
     }
     
+    // méthode toString()
+    
     @Override
     public String toString()
     {

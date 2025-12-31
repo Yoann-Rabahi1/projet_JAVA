@@ -8,22 +8,32 @@
  * @author rabah
  */
 public abstract class Prestation {
-
+    
+    // attribut
+    
     public enum CategorieVehicule { A, B, C }
 
     private CategorieVehicule categorieVehicule;
-
+    
+    // constructeur
+    
     public Prestation(CategorieVehicule categorieVehicule) {
         this.categorieVehicule = categorieVehicule;
     }
+    
+    // getter
 
     public CategorieVehicule getCategorieVehicule() {
         return categorieVehicule;
     }
+    
+    // setter
 
     public void setCategorieVehicule(CategorieVehicule categorieVehicule) {
         this.categorieVehicule = categorieVehicule;
     }
+    
+    // méthode toString() abstraite
     
     @Override
     public abstract String toString();

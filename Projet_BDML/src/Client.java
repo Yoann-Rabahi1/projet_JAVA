@@ -80,6 +80,17 @@ public class Client {
         this.mail_client = mail_client;
     }
     
+    @Override
+    public String toString()
+    {
+        return "["
+                + "numero client : " + getNumeroClient()
+                + ", nom client : " + getNomClient()
+                + ", telephone client : " + getTelClient()
+                + ", mail client : " + getMailClient()
+                + "]";
+    }
+    
     
     
     

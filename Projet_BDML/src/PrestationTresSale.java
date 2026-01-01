@@ -9,7 +9,7 @@
  */
 public class PrestationTresSale extends Prestation {
     
-    private enum TypeSalissure {niveau1, niveau2, niveau3, niveau4};
+    private enum TypeSalissure {nourriture, boue, transpiration, graisse};
     
     private TypeSalissure type_salissure;
     

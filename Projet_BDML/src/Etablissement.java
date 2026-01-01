@@ -12,6 +12,8 @@ import java.util.Arrays;
 
 public class Etablissement {
     
+    private final int nbMaxClients = 100;
+    
     private String nomEtablissement;
     private int nombreClients;
     private Client[] clients;
@@ -87,5 +89,72 @@ public class Etablissement {
             }
         } return null;
     }
+    
+    /*
+    
+    écrire deux méthodes ajouter permettant :
+     d’ajouter un client en donnant son nom et son numéro de téléphone,
+     d’ajouter un client en donnant, en plus, son adresse électronique.
+    
+    */
+    
+    public boolean ajouter(String nom, String numTel)
+    {
+        
+        if(this.nombreClients >= nbMaxClients)
+        {
+            System.out.println("Le nombre de clients est au max, impossible d'en ajouter !");
+            return false;
+        }
+        
+        Client nouveauClient = new Client(this.nombreClients + 1, nom, numTel);
+        
+        int position = 0;
+        
+        while(position <this.nombreClients && nouveauClient.placerApres(this.clients[position]))
+        {
+            position++;
+        }
+        
+        for (int i = this.nombreClients; i > position; i--)
+        {
+            this.clients[i] = this.clients[i - 1];
+        }
+        
+        this.clients[position] = nouveauClient;
+        this.nombreClients++;
+        
+        return true;     
+    }
+    
+    public boolean ajouter(String nom, String numTel,String mail)
+    {
+        
+        if(this.nombreClients >= nbMaxClients)
+        {
+            System.out.println("Le nombre de clients est au max, impossible d'en ajouter !");
+            return false;
+        }
+        
+        Client nouveauClient = new Client(this.nombreClients + 1, nom, numTel, mail);
+        
+        int position = 0;
+        
+        while(position <this.nombreClients && nouveauClient.placerApres(this.clients[position]))
+        {
+            position++;
+        }
+        
+        for (int i = this.nombreClients; i > position; i--)
+        {
+            this.clients[i] = this.clients[i - 1];
+        }
+        
+        this.clients[position] = nouveauClient;
+        this.nombreClients++;
+        
+        return true;     
+    }
+    
           
 }   

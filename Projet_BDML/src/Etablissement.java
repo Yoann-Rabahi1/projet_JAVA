@@ -67,7 +67,7 @@ public class Etablissement {
     }
     
     
-    // nouvelles méthodes à implémenter
+    // --------------- nouvelles méthodes à implémenter ---------------
     
     /*
     
@@ -87,5 +87,5 @@ public class Etablissement {
             }
         } return null;
     }
-           
+          
 }   

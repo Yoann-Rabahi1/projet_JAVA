@@ -93,4 +93,21 @@ public class Client {
                 + "]";
     }
     
+    
+        // --------------- nouvelles méthodes à implémenter ---------------
+
+    
+    /*
+    
+    méthode placerApres permettant de comparer deux clients.
+    La méthode doit retourner true si le client correspondant à l’objet appelant doit être placé après
+    l’autre dans le tableau des clients, false sinon.
+    
+    */
+    
+    public boolean placerApres(Client autreClient)
+    {
+        return this.nom_client.compareTo(autreClient.getNomClient()) > 0;
+    }
+    
 }

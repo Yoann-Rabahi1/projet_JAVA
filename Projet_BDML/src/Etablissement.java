@@ -65,5 +65,27 @@ public class Etablissement {
                 + ", planning des rdv : " + Arrays.deepToString(planningRDV)
                 + " ]";
     }
+    
+    
+    // nouvelles méthodes à implémenter
+    
+    /*
+    
+    méthode rechercher permettant de rechercher, dans le
+    tableau de clients, le client correspondant à un nom et un numéro de téléphone donnés. La
+    méthode doit retourner le client qu’elle a trouvé ou null s’il n’y en a pas.
+    
+    */
+    
+    public Client rechercher(Client[] clients, String nom, String numTel)
+    {
+        for (Client c : clients)
+        {
+            if(c != null && c.getNomClient().equals(nom) && c.getTelClient().equals(numTel))
+            {
+                return c;
+            }
+        } return null;
+    }
            
 }   

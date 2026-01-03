@@ -43,4 +43,6 @@ public abstract class Prestation {
     public abstract double sechage();
     
     public abstract double prelavage();
+    
+    public abstract double nettoyage();
 }

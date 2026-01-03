@@ -11,9 +11,9 @@ public class PrestationExpress extends Prestation {
     
     private boolean a_nettoyer;
     
-    public PrestationExpress(double prixSechage, double prixLavage, double prixNettoyage, double prixPrelavage, CategorieVehicule categorieVehicule, boolean a_nettoyer)
+    public PrestationExpress(CategorieVehicule categorieVehicule, boolean a_nettoyer)
     {
-        super(prixSechage, prixLavage, prixNettoyage, prixPrelavage, categorieVehicule);
+        super(categorieVehicule);
         this.a_nettoyer = a_nettoyer;
     }
     
@@ -41,29 +41,78 @@ public class PrestationExpress extends Prestation {
                 + " ]";
     }
     
-    
-    public double lavage(double prix_lavage)
+    @Override
+    public double lavage()
     {
-        return prix_lavage;
+        
+       double prixLavage;
+        
+        switch(this.getCategorieVehicule())
+        {
+            case A:
+                prixLavage = 20;
+                return prixLavage;
+            
+            case B:
+                prixLavage = 20 + (20 * 0.5); 
+                return prixLavage;
+            
+            case C:
+                prixLavage = 20 + (20 * 0.75);
+                return prixLavage;
+        }
+        return 0;
     }
     
-    public double sechage(double prix_sechage)
+    @Override
+    public double sechage()
     {
-        return prix_sechage;
+        double prixSechage;
+        
+        switch(this.getCategorieVehicule())
+        {
+            case A:
+                prixSechage = 10 ;
+                return prixSechage;
+            
+            case B:
+                prixSechage = 10  + (10  * 0.05); 
+                return prixSechage;
+            
+            case C:
+                prixSechage = 10  + (10 * 0.1);
+                return prixSechage;
+        }
+        return 0;
     }
     
-    public double prelavage(double prix_prelavage)
+    @Override
+    public double prelavage()
     {
-        return prix_prelavage;
+        double prixPrelavage;
+        
+        switch(this.getCategorieVehicule())
+        {
+            case A:
+                prixPrelavage = 5 ;
+                return prixPrelavage;
+            
+            case B:
+                prixPrelavage = 5  + (5  * 0.5); 
+                return prixPrelavage;
+            
+            case C:
+                prixPrelavage = 5  + (5 * 0.75);
+                return prixPrelavage;
+        }
+        return 0;
     }
     
-    public double nettoyage(double prix_nettoyage)
+    @Override
+    public double nettoyage()
     {
-        return prix_nettoyage;
+        return a_nettoyer ? super.nettoyage() : 0;
     }
-    
-    
-    
             
     
 }

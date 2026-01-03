@@ -98,62 +98,76 @@ public class Etablissement {
     
     */
     
-    public boolean ajouter(String nom, String numTel)
+    public Client ajouter(int numeroClient, String nom, String numTel)
     {
         
-        if(this.nombreClients >= nbMaxClients)
-        {
-            System.out.println("Le nombre de clients est au max, impossible d'en ajouter !");
-            return false;
-        }
+    if (this.nombreClients >= nbMaxClients)
+        return null;
+
+    Client nouveauClient = new Client(0, nom, numTel); // numéro temporaire
+
+    int position = 0;
+
+    // Trouver la position d'insertion
+    while (position < this.nombreClients &&
+           nouveauClient.placerApres(this.clients[position])) {
+        position++;
+    }
+
+    // Décaler vers la droite
+    for (int i = this.nombreClients; i > position; i--) {
+        this.clients[i] = this.clients[i - 1];
+    }
+
+    // Insérer le client
+    this.clients[position] = nouveauClient;
+
+    this.nombreClients++;
+
+    // 🔥 Renumérotation continue
+    for (int i = 0; i < this.nombreClients; i++) {
+        this.clients[i].setNumeroClient(i + 1);
+    }
+
+    return nouveauClient;
         
-        Client nouveauClient = new Client(this.nombreClients + 1, nom, numTel);
-        
-        int position = 0;
-        
-        while(position <this.nombreClients && nouveauClient.placerApres(this.clients[position]))
-        {
-            position++;
-        }
-        
-        for (int i = this.nombreClients; i > position; i--)
-        {
-            this.clients[i] = this.clients[i - 1];
-        }
-        
-        this.clients[position] = nouveauClient;
-        this.nombreClients++;
-        
-        return true;     
     }
     
-    public boolean ajouter(String nom, String numTel,String mail)
+
+    
+    public Client ajouter(int numeroClient, String nom, String numTel, String mail)
     {
         
-        if(this.nombreClients >= nbMaxClients)
-        {
-            System.out.println("Le nombre de clients est au max, impossible d'en ajouter !");
-            return false;
-        }
+    if (this.nombreClients >= nbMaxClients)
+        return null;
+
+    Client nouveauClient = new Client(0, nom, numTel, mail); // numéro temporaire
+
+    int position = 0;
+
+    // Trouver la position d'insertion
+    while (position < this.nombreClients &&
+           nouveauClient.placerApres(this.clients[position])) {
+        position++;
+    }
+
+    // Décaler vers la droite
+    for (int i = this.nombreClients; i > position; i--) {
+        this.clients[i] = this.clients[i - 1];
+    }
+
+    // Insérer le client
+    this.clients[position] = nouveauClient;
+
+    this.nombreClients++;
+
+    // 🔥 Renumérotation continue
+    for (int i = 0; i < this.nombreClients; i++) {
+        this.clients[i].setNumeroClient(i + 1);
+    }
+
+    return nouveauClient;
         
-        Client nouveauClient = new Client(this.nombreClients + 1, nom, numTel, mail);
-        
-        int position = 0;
-        
-        while(position <this.nombreClients && nouveauClient.placerApres(this.clients[position]))
-        {
-            position++;
-        }
-        
-        for (int i = this.nombreClients; i > position; i--)
-        {
-            this.clients[i] = this.clients[i - 1];
-        }
-        
-        this.clients[position] = nouveauClient;
-        this.nombreClients++;
-        
-        return true;     
     }
     
           

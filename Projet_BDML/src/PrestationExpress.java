@@ -11,9 +11,9 @@ public class PrestationExpress extends Prestation {
     
     private boolean a_nettoyer;
     
-    public PrestationExpress(CategorieVehicule categorieVehicule, boolean a_nettoyer)
+    public PrestationExpress(double prixSechage, double prixLavage, double prixNettoyage, double prixPrelavage, CategorieVehicule categorieVehicule, boolean a_nettoyer)
     {
-        super(categorieVehicule);
+        super(prixSechage, prixLavage, prixNettoyage, prixPrelavage, categorieVehicule);
         this.a_nettoyer = a_nettoyer;
     }
     
@@ -40,6 +40,30 @@ public class PrestationExpress extends Prestation {
                 +", à nettoyer : " + getANettoyer()
                 + " ]";
     }
+    
+    
+    public double lavage(double prix_lavage)
+    {
+        return prix_lavage;
+    }
+    
+    public double sechage(double prix_sechage)
+    {
+        return prix_sechage;
+    }
+    
+    public double prelavage(double prix_prelavage)
+    {
+        return prix_prelavage;
+    }
+    
+    public double nettoyage(double prix_nettoyage)
+    {
+        return prix_nettoyage;
+    }
+    
+    
+    
             
     
 }

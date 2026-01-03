@@ -3,6 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+import java.time.*;
+import java.util.Scanner;
+
 /**
  *
  * @author rabah
@@ -124,7 +127,7 @@ public class Etablissement {
 
     this.nombreClients++;
 
-    // 🔥 Renumérotation continue
+    // Renumérotation continue
     for (int i = 0; i < this.nombreClients; i++) {
         this.clients[i].setNumeroClient(i + 1);
     }
@@ -161,7 +164,7 @@ public class Etablissement {
 
     this.nombreClients++;
 
-    // 🔥 Renumérotation continue
+    // Renumérotation continue
     for (int i = 0; i < this.nombreClients; i++) {
         this.clients[i].setNumeroClient(i + 1);
     }
@@ -170,5 +173,91 @@ public class Etablissement {
         
     }
     
+    /*
+    
+    de rechercher un créneau pour un jour donné. La méthode doit afficher toutes les heures
+    disponibles pour le jour souhaité, puis en faire choisir une au client et retourner le créneau
+    (date et heure) correspondant,
+    
+    */
+    
+   public void rechercher(int jour)
+    {
+        if (jour >= 1 && jour <= 7)
+        {
+            jour = jour - 1;
+
+            for (int i = 0; i < planningRDV.length; i++)
+            {
+                if (planningRDV[i][jour] != null)
+                {
+                    System.out.println(i + " -> " + planningRDV[i][jour]);
+                }
+            }
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Choisissez un créneau (numéro de ligne) : ");
+            int heure = scanner.nextInt();
+
+            if (heure < 0 || heure >= planningRDV.length || planningRDV[heure][jour] == null)
+            {
+                System.out.println("Créneau invalide !");
+                return;
+            }
+
+            System.out.println("L'heure choisie est : " + planningRDV[heure][jour] + " !");
+        }
+        else
+        {
+            System.out.println("Journée invalide !");
+        }
+    }
+
+    
+    /*
+    
+    de rechercher un créneau pour une heure donnée. La méthode doit afficher tous les jours
+    disponibles pour l’heure souhaitée, puis en faire choisir un au client et retourner le créneau
+    (date et heure) correspondant.
+
+    */
+    
+    public int getIndex(LocalTime heure) 
+    {
+        int minutes = heure.getHour() * 60 + heure.getMinute();
+        int minutesDebut = 9 * 60;
+        return (minutes - minutesDebut) / 30;
+    }
+
+
+    
+    public void rechercher(LocalTime heure)
+    {
+        int h = getIndex(heure);
+
+        if (h < 0 || h >= planningRDV.length) {
+            System.out.println("L'heure entrée n'est pas compatible.");
+            return;
+        }
+
+        // Afficher les jours disponibles
+        for (int i = 0; i < planningRDV[h].length; i++) {
+            if (planningRDV[h][i] != null) {
+                System.out.println(i + " -> " + planningRDV[h][i]);
+            }
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choisissez un jour (numéro de colonne) : ");
+        int jour = scanner.nextInt();
+
+        if (jour < 0 || jour >= planningRDV[h].length || planningRDV[h][jour] == null) {
+            System.out.println("Créneau invalide !");
+            return;
+        }
+
+        System.out.println("Le créneau choisi est : " + planningRDV[h][jour] + " !");
+    }
+
           
 }   

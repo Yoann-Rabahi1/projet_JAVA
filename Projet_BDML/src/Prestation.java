@@ -37,4 +37,10 @@ public abstract class Prestation {
     
     @Override
     public abstract String toString();
+    
+    public abstract double lavage();
+    
+    public abstract double sechage();
+    
+    public abstract double prelavage();
 }

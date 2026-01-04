@@ -9,9 +9,9 @@
  */
 public class PrestationTresSale extends Prestation {
     
-    private enum TypeSalissure {nourriture, boue, transpiration, graisse};
+    public enum TypeSalissure {nourriture, boue, transpiration, graisse};
     
-    private TypeSalissure type_salissure;
+    public TypeSalissure type_salissure;
     
     public PrestationTresSale(CategorieVehicule categorieVehicule, TypeSalissure type_salissure)
     {

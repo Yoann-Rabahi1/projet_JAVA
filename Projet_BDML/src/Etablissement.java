@@ -253,10 +253,86 @@ public class Etablissement {
 
         if (jour < 0 || jour >= planningRDV[h].length || planningRDV[h][jour] == null) {
             System.out.println("Créneau invalide !");
-            return;
+            return ;
         }
 
         System.out.println("Le créneau choisi est : " + planningRDV[h][jour] + " !");
+    }
+    
+    
+    /*
+    
+    ajouter un rendez-vous pour une prestation express en donnant le client, le créneau choisi
+    (date et heure), la catégorie du véhicule et en indiquant si l’intérieur du véhicule doit être
+    nettoyé ou non
+    
+    */
+    
+    public RendezVous ajouter(Client client,
+                          LocalDateTime creneau,
+                          Prestation.CategorieVehicule categorie,
+                          boolean nettoyageInterieur,
+                          double prix)
+    {
+        int jour = creneau.getDayOfWeek().getValue() - 1;
+        int heure = getIndex(creneau.toLocalTime());
+
+        if (planningRDV[heure][jour] != null) {
+            System.out.println("Créneau déjà réservé.");
+            return null;
+        }
+
+        PrestationExpress prestation = new PrestationExpress(categorie, nettoyageInterieur);
+        RendezVous rdv = new RendezVous(client, prestation, prix);
+
+        planningRDV[heure][jour] = rdv;
+
+        return rdv;
+    }
+    
+    
+    public RendezVous ajouter(Client client,
+                          LocalDateTime creneau,
+                          Prestation.CategorieVehicule categorie,
+                          double prix)
+    {
+        int jour = creneau.getDayOfWeek().getValue() - 1;
+        int heure = getIndex(creneau.toLocalTime());
+
+        if (planningRDV[heure][jour] != null) {
+            System.out.println("Créneau déjà réservé.");
+            return null;
+        }
+
+        PrestationSale prestation = new PrestationSale(categorie);
+        RendezVous rdv = new RendezVous(client, prestation, prix);
+
+        planningRDV[heure][jour] = rdv;
+
+        return rdv;
+    }
+    
+    
+    public RendezVous ajouter(Client client,
+                          LocalDateTime creneau,
+                          Prestation.CategorieVehicule categorie,
+                          PrestationTresSale.TypeSalissure typeSalissure,
+                          double prix)
+    {
+        int jour = creneau.getDayOfWeek().getValue() - 1;
+        int heure = getIndex(creneau.toLocalTime());
+
+        if (planningRDV[heure][jour] != null) {
+            System.out.println("Créneau déjà réservé.");
+            return null;
+        }
+
+        PrestationTresSale prestation = new PrestationTresSale(categorie, typeSalissure);
+        RendezVous rdv = new RendezVous(client, prestation, prix);
+
+        planningRDV[heure][jour] = rdv;
+
+        return rdv;
     }
 
           

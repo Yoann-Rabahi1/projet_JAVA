@@ -13,11 +13,15 @@ public class RendezVous {
     private Prestation prestation;
     private double prix;
     
-    public RendezVous(Client client, Prestation prestation, double prix)
+    public RendezVous(Client client, Prestation prestation)
     {
         this.client = client;
         this.prestation = prestation;
-        this.prix = prix;
+        this.prix = prestation.lavage()
+          + prestation.sechage()
+          + prestation.prelavage()
+          + prestation.nettoyage();
+
     }
     
     // getter

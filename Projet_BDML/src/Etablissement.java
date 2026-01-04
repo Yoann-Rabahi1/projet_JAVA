@@ -22,11 +22,11 @@ public class Etablissement {
     private Client[] clients;
     private RendezVous[][] planningRDV;
     
-    public Etablissement(String nomEtablissement, int nombreClients, int nbCreneaux)
+    public Etablissement(String nomEtablissement, int nbCreneaux)
     {
         this.nomEtablissement = nomEtablissement;
-        this.nombreClients = nombreClients;
-        this.clients = new Client[nombreClients];
+        this.nombreClients = 0;
+        this.clients = new Client[nbMaxClients];
         this.planningRDV = new RendezVous[nbCreneaux][7];
     }
     
@@ -283,7 +283,7 @@ public class Etablissement {
         }
 
         PrestationExpress prestation = new PrestationExpress(categorie, nettoyageInterieur);
-        RendezVous rdv = new RendezVous(client, prestation, prix);
+        RendezVous rdv = new RendezVous(client, prestation);
 
         planningRDV[heure][jour] = rdv;
 
@@ -305,7 +305,7 @@ public class Etablissement {
         }
 
         PrestationSale prestation = new PrestationSale(categorie);
-        RendezVous rdv = new RendezVous(client, prestation, prix);
+        RendezVous rdv = new RendezVous(client, prestation);
 
         planningRDV[heure][jour] = rdv;
 
@@ -328,7 +328,7 @@ public class Etablissement {
         }
 
         PrestationTresSale prestation = new PrestationTresSale(categorie, typeSalissure);
-        RendezVous rdv = new RendezVous(client, prestation, prix);
+        RendezVous rdv = new RendezVous(client, prestation);
 
         planningRDV[heure][jour] = rdv;
 

@@ -1,7 +1,7 @@
 /*
  * TP   : Projet fin de semestre
  * Class: PrestationTresSale | Station de lavage
- * Name : Stéphane SINGERY
+ * Name : Stéphane SINGERY, Yoann RABAHI, Teddy RAKOTOARIVELO
  * Group: ING1-APP-BDML2
  * Date : 2026-01-01
  */

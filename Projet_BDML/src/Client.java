@@ -1,7 +1,7 @@
 /*
  * TP     : Projet
  * Classe : Client | Station de lavage
- * Nom    : Stéphane SINGERY
+ * Nom    : Stéphane SINGERY, Yoann RABAHI, Teddy RAKOTOARIVELO
  * Groupe : ING1-APP-BDML2
  * Année  : 2026-01-01
  */

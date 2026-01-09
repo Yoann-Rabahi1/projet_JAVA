@@ -127,4 +127,10 @@ public abstract class Prestation {
         
     }
     
+    public double calculerPrix() 
+    {
+        return lavage() + sechage() + prelavage() + nettoyage();
+    }
+
+    
 }

@@ -334,6 +334,164 @@ public class Etablissement {
 
         return rdv;
     }
+    
+    
+    /*
+    
+    planifier permettant de planifier un rendez-vous
+    pour le nettoyage d’un véhicule. Le programme doit :
+     demander le nom et le numéro de téléphone du client et, s’il s’agit d’un nouveau client, l’ajouter
+    dans le tableau de clients de l’établissement,
+     lui faire choisir un créneau dans les 7 jours suivants,
+     lui faire choisir le type de prestation et lui demander les informations correspondantes,
+     ajouter le rendez-vous dans le tableau de rendez-vous de l’établissement et indiquer le prix de
+    la prestation au client.
+    Utiliser les méthodes précédemment écrites.
+    
+    */
+    
+    
+    public void planifier()
+    {
+        Scanner scanner = new Scanner(System.in);
 
+        System.out.println("Entrez votre nom : ");
+        String nom = scanner.nextLine();
+
+        System.out.println("Entrez votre numéro de téléphone : ");
+        String numTel = scanner.nextLine();
+
+        Client client = this.rechercher(clients, nom, numTel);
+
+        if(client == null)
+        {
+            System.out.println("Vous êtes un nouveau client");
+            client = this.ajouter(nombreClients, nom, numTel);
+        }
+
+        System.out.println("Choisissez un jour parmi les 7 qui arrivent");
+        int jour = scanner.nextInt();
+
+        // Création du créneau
+        LocalDateTime creneau = LocalDateTime.now().plusDays(jour);
+
+        System.out.println("Choisissez le type de prestation que vous voulez");
+        System.out.println("1 : Prestation express");
+        System.out.println("2 : Prestation sale");
+        System.out.println("3 : Prestation très sale");
+
+        int numPrestation = scanner.nextInt();
+
+        while(numPrestation != 1 && numPrestation != 2 && numPrestation != 3)
+        {
+            System.out.println("Vous devez choisir 1, 2 ou 3");
+            numPrestation = scanner.nextInt();
+        }
+
+        System.out.println("Quel est le type de votre véhicule ?");
+        System.out.println("1 : Citadine");
+        System.out.println("2 : Berline");
+        System.out.println("3 : Monospace ou 4x4");
+
+        int numCategorieVehicule = scanner.nextInt();
+
+        while(numCategorieVehicule != 1 && numCategorieVehicule != 2 && numCategorieVehicule != 3)
+        {
+            System.out.println("Vous devez choisir 1, 2 ou 3");
+            numCategorieVehicule = scanner.nextInt();
+        }
+
+        Prestation.CategorieVehicule categorieVehicule = null;
+
+        switch (numCategorieVehicule)
+        {
+            case 1: categorieVehicule = Prestation.CategorieVehicule.A; break;
+            case 2: categorieVehicule = Prestation.CategorieVehicule.B; break;
+            case 3: categorieVehicule = Prestation.CategorieVehicule.C; break;
+        }
+
+        Prestation p = null;
+        double prix = 0;
+
+        switch (numPrestation)
+        {
+            // prestation Express
+            case 1:
+
+                System.out.println("Faut-il nettoyer l'intérieur de la voiture ?");
+                System.out.println("1 : Oui");
+                System.out.println("0 : Non");
+
+                int aNettoyer = scanner.nextInt();
+
+                while(aNettoyer != 0 && aNettoyer != 1)
+                {
+                    System.out.println("Vous devez choisir 0 ou 1");
+                    aNettoyer = scanner.nextInt();
+                }
+
+                if(aNettoyer == 0)
+                {
+                    p = new PrestationExpress(categorieVehicule, false);
+                }
+                else
+                {
+                    p = new PrestationExpress(categorieVehicule, true);
+                }
+
+                prix = p.calculerPrix();
+
+                // AJOUT DU RENDEZ-VOUS EXPRESS
+                this.ajouter(client, creneau, categorieVehicule, (aNettoyer == 1), prix);
+
+                break;
+
+            // prestation sale
+            case 2:
+                p = new PrestationSale(categorieVehicule);
+                prix = p.calculerPrix();
+
+                // AJOUT DU RENDEZ-VOUS SALE
+                this.ajouter(client, creneau, categorieVehicule, prix);
+
+                break;
+
+            // prestation très sale
+            case 3:
+
+                System.out.println("Quel est le type de salissure ?");
+                System.out.println("1 : nourriture");
+                System.out.println("2 : boue");
+                System.out.println("3 : transpiration");
+                System.out.println("4 : graisse");
+
+                int salissure = scanner.nextInt();
+
+                while(salissure < 1 || salissure > 4)
+                {
+                    System.out.println("Vous devez choisir 1, 2, 3 ou 4");
+                    salissure = scanner.nextInt();
+                }
+
+                PrestationTresSale.TypeSalissure typeSalissure = switch (salissure) {
+                    case 1 -> PrestationTresSale.TypeSalissure.nourriture;
+                    case 2 -> PrestationTresSale.TypeSalissure.boue;
+                    case 3 -> PrestationTresSale.TypeSalissure.transpiration;
+                    default -> PrestationTresSale.TypeSalissure.graisse;
+                };
+
+                p = new PrestationTresSale(categorieVehicule, typeSalissure);
+                prix = p.calculerPrix();
+
+                // AJOUT DU RENDEZ-VOUS TRES SALE
+                this.ajouter(client, creneau, categorieVehicule, typeSalissure, prix);
+
+                break;
+        }
+
+        System.out.println("Votre rendez-vous a été enregistré.");
+        System.out.println("Prix total : " + prix + " euros");
+    }
           
+   
 }   

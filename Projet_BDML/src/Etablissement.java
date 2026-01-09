@@ -175,7 +175,7 @@ public class Etablissement {
     
     /*
     
-    de rechercher un créneau pour un jour donné. La méthode doit afficher toutes les heures
+    de 'rechercher' un créneau pour un jour donné. La méthode doit afficher toutes les heures
     disponibles pour le jour souhaité, puis en faire choisir une au client et retourner le créneau
     (date et heure) correspondant,
     
@@ -216,7 +216,7 @@ public class Etablissement {
     
     /*
     
-    de rechercher un créneau pour une heure donnée. La méthode doit afficher tous les jours
+    de 'rechercher' un créneau pour une heure donnée. La méthode doit afficher tous les jours
     disponibles pour l’heure souhaitée, puis en faire choisir un au client et retourner le créneau
     (date et heure) correspondant.
 
@@ -262,7 +262,7 @@ public class Etablissement {
     
     /*
     
-    ajouter un rendez-vous pour une prestation express en donnant le client, le créneau choisi
+    'ajouter' un rendez-vous pour une prestation express en donnant le client, le créneau choisi
     (date et heure), la catégorie du véhicule et en indiquant si l’intérieur du véhicule doit être
     nettoyé ou non
     
@@ -338,7 +338,7 @@ public class Etablissement {
     
     /*
     
-    planifier permettant de planifier un rendez-vous
+    'planifier' permettant de planifier un rendez-vous
     pour le nettoyage d’un véhicule. Le programme doit :
      demander le nom et le numéro de téléphone du client et, s’il s’agit d’un nouveau client, l’ajouter
     dans le tableau de clients de l’établissement,
@@ -492,6 +492,79 @@ public class Etablissement {
         System.out.println("Votre rendez-vous a été enregistré.");
         System.out.println("Prix total : " + prix + " euros");
     }
-          
+    
+    /*
+    
+    Etablissement, ajouter des méthodes 'afficher' permettant :
+     d’afficher le planning des rendez-vous pour un jour donné.
+     d’afficher le(s) client(s) de l’établissement correspondant à un nom ou à un numéro de
+    téléphone donné,
+     d’afficher le(s) rendez-vous pris par le client correspondant à un numéro de client donné,
+    
+    */
+    
+    
+    public void afficher(int jour)
+    {
+        if (jour < 1 || jour > 7) {
+            System.out.println("Journée invalide");
+            return;
+        }
+
+        int indexJour = jour - 1;
+
+        System.out.println("Planning du jour " + jour + " :");
+
+        for (int i = 0; i < planningRDV.length; i++)
+        {
+            if (planningRDV[i][indexJour] != null)
+            {
+                System.out.println("Créneau " + i + " -> " + planningRDV[i][indexJour]);
+            }
+        }
+    }
+
+    
+    public void afficher(Client[] clients, String nom, String numTel)
+    {
+        boolean trouve = false;
+
+        for (Client c : clients)
+        {
+            if (c != null && (c.getNomClient().equals(nom) || c.getTelClient().equals(numTel)))
+            {
+                System.out.println(c);
+                trouve = true;
+            }
+        }
+
+        if (!trouve)
+            System.out.println("Aucun client ne correspond.");
+    }
+
+    
+    
+    public void afficher(Client client)
+    {
+        System.out.println("Rendez-vous du client : " + client.getNomClient());
+
+        boolean trouve = false;
+
+        for (int i = 0; i < planningRDV.length; i++)
+        {
+            for (int j = 0; j < planningRDV[i].length; j++)
+            {
+                if (planningRDV[i][j] != null && planningRDV[i][j].getClient().equals(client))
+                {
+                    System.out.println("Jour " + (j+1) + ", créneau " + i + " -> " + planningRDV[i][j]);
+                    trouve = true;
+                }
+            }
+        }
+
+        if (!trouve)
+            System.out.println("Aucun rendez-vous trouvé pour ce client.");
+    }
+
    
 }   

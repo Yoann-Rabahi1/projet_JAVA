@@ -49,4 +49,15 @@ public class PrestationExpress extends Prestation {
     }
             
     
+    @Override
+    public String versFichier()
+    {
+        String separator = System.lineSeparator();
+        
+        return this.getCategorieVehicule() + " : " 
+               + this.a_nettoyer + " : "
+               + this.calculerPrix()
+               + separator;
+    }
+    
 }

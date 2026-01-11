@@ -48,9 +48,9 @@ public class Main {
         System.out.println("Nettoyage intérieur : " + p3.nettoyage());
         
         // === Test RendezVous === 
-        RendezVous rdv = new RendezVous(client1, p1); 
+        //RendezVous rdv = new RendezVous(client1, p1, ); 
         System.out.println("\n--- RendezVous ---"); 
-        System.out.println(rdv);
+        //System.out.println(rdv);
         
         
         
@@ -80,16 +80,16 @@ public class Main {
         System.out.println("\n--- Ajout de rendez-vous ---");
         
         LocalDateTime rdv1Date = LocalDateTime.of(2025, 1, 10, 10, 0);
-        RendezVous rdv1 = e.ajouter(c1, rdv1Date, Prestation.CategorieVehicule.A, true, 0);
+        RendezVous rdv1 = e.ajouter(c1, rdv1Date, Prestation.CategorieVehicule.A, true);
         
         System.out.println("RDV ajouté : " + rdv1);
         
         LocalDateTime rdv2Date = LocalDateTime.of(2025, 1, 10, 11, 0);
-        RendezVous rdv2 = e.ajouter(c2, rdv2Date, Prestation.CategorieVehicule.B, 0);
+        RendezVous rdv2 = e.ajouter(c2, rdv2Date, Prestation.CategorieVehicule.B);
         
         System.out.println("RDV ajouté : " + rdv2); LocalDateTime rdv3Date = LocalDateTime.of(2025, 1, 11, 9, 30);
         
-        RendezVous rdv3 = e.ajouter(c3, rdv3Date, Prestation.CategorieVehicule.C, PrestationTresSale.TypeSalissure.graisse, 0);
+        RendezVous rdv3 = e.ajouter(c3, rdv3Date, Prestation.CategorieVehicule.C, PrestationTresSale.TypeSalissure.graisse);
         
         System.out.println("RDV ajouté : " + rdv3); 
         
@@ -97,7 +97,7 @@ public class Main {
         
         System.out.println("\n--- Test créneau déjà réservé ---");
         
-        RendezVous rdvFail = e.ajouter(c1, rdv1Date, Prestation.CategorieVehicule.A, true, 0); 
+        RendezVous rdvFail = e.ajouter(c1, rdv1Date, Prestation.CategorieVehicule.A, true); 
         
         System.out.println("Résultat : " + rdvFail); 
         

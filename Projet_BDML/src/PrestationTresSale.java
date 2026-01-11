@@ -43,4 +43,15 @@ public class PrestationTresSale extends Prestation {
                 + " ]";
     }
     
+    @Override
+    public String versFichier()
+    {
+        String separator = System.lineSeparator();
+        
+        return this.getCategorieVehicule() + " : "
+                + this.getTypeSalissure() + " : "
+                + this.calculerPrix() 
+                + separator;
+    }
+    
 }

@@ -110,4 +110,17 @@ public class Client {
         return this.nom_client.compareTo(autreClient.getNomClient()) > 0;
     }
     
+    
+    public String versFichier() 
+    {
+        
+    String separator = System.lineSeparator();
+    
+    return this.getNumeroClient() + " : " 
+         + this.nom_client + " : " 
+         + this.tel_client + " : " 
+         + this.getMailClient() 
+         + separator;
+    }
+
 }

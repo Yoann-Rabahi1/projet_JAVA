@@ -22,4 +22,13 @@ public class PrestationSale extends Prestation{
                 + " ]";
     }
     
+    @Override
+    public String versFichier()
+    {
+        String separator = System.lineSeparator();
+        
+        return this.getCategorieVehicule() + " : "
+                + this.calculerPrix()
+                + separator;
+    }
 }

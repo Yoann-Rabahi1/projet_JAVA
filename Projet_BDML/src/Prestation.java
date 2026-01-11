@@ -132,5 +132,5 @@ public abstract class Prestation {
         return lavage() + sechage() + prelavage() + nettoyage();
     }
 
-    
+    public abstract String versFichier();
 }

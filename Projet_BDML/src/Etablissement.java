@@ -271,8 +271,7 @@ public class Etablissement {
     public RendezVous ajouter(Client client,
                           LocalDateTime creneau,
                           Prestation.CategorieVehicule categorie,
-                          boolean nettoyageInterieur,
-                          double prix)
+                          boolean nettoyageInterieur)
     {
         int jour = creneau.getDayOfWeek().getValue() - 1;
         int heure = getIndex(creneau.toLocalTime());
@@ -283,7 +282,7 @@ public class Etablissement {
         }
 
         PrestationExpress prestation = new PrestationExpress(categorie, nettoyageInterieur);
-        RendezVous rdv = new RendezVous(client, prestation);
+        RendezVous rdv = new RendezVous(client, prestation, creneau);
 
         planningRDV[heure][jour] = rdv;
 
@@ -293,8 +292,7 @@ public class Etablissement {
     
     public RendezVous ajouter(Client client,
                           LocalDateTime creneau,
-                          Prestation.CategorieVehicule categorie,
-                          double prix)
+                          Prestation.CategorieVehicule categorie)
     {
         int jour = creneau.getDayOfWeek().getValue() - 1;
         int heure = getIndex(creneau.toLocalTime());
@@ -305,7 +303,7 @@ public class Etablissement {
         }
 
         PrestationSale prestation = new PrestationSale(categorie);
-        RendezVous rdv = new RendezVous(client, prestation);
+        RendezVous rdv = new RendezVous(client, prestation, creneau);
 
         planningRDV[heure][jour] = rdv;
 
@@ -316,8 +314,7 @@ public class Etablissement {
     public RendezVous ajouter(Client client,
                           LocalDateTime creneau,
                           Prestation.CategorieVehicule categorie,
-                          PrestationTresSale.TypeSalissure typeSalissure,
-                          double prix)
+                          PrestationTresSale.TypeSalissure typeSalissure)
     {
         int jour = creneau.getDayOfWeek().getValue() - 1;
         int heure = getIndex(creneau.toLocalTime());
@@ -328,7 +325,7 @@ public class Etablissement {
         }
 
         PrestationTresSale prestation = new PrestationTresSale(categorie, typeSalissure);
-        RendezVous rdv = new RendezVous(client, prestation);
+        RendezVous rdv = new RendezVous(client, prestation, creneau);
 
         planningRDV[heure][jour] = rdv;
 
@@ -411,8 +408,7 @@ public class Etablissement {
         }
 
         Prestation p = null;
-        double prix = 0;
-
+        
         switch (numPrestation)
         {
             // prestation Express
@@ -439,20 +435,17 @@ public class Etablissement {
                     p = new PrestationExpress(categorieVehicule, true);
                 }
 
-                prix = p.calculerPrix();
-
                 // AJOUT DU RENDEZ-VOUS EXPRESS
-                this.ajouter(client, creneau, categorieVehicule, (aNettoyer == 1), prix);
+                this.ajouter(client, creneau, categorieVehicule, (aNettoyer == 1));
 
                 break;
 
             // prestation sale
             case 2:
                 p = new PrestationSale(categorieVehicule);
-                prix = p.calculerPrix();
 
                 // AJOUT DU RENDEZ-VOUS SALE
-                this.ajouter(client, creneau, categorieVehicule, prix);
+                this.ajouter(client, creneau, categorieVehicule);
 
                 break;
 
@@ -481,16 +474,15 @@ public class Etablissement {
                 };
 
                 p = new PrestationTresSale(categorieVehicule, typeSalissure);
-                prix = p.calculerPrix();
 
                 // AJOUT DU RENDEZ-VOUS TRES SALE
-                this.ajouter(client, creneau, categorieVehicule, typeSalissure, prix);
+                this.ajouter(client, creneau, categorieVehicule, typeSalissure);
 
                 break;
         }
 
         System.out.println("Votre rendez-vous a été enregistré.");
-        System.out.println("Prix total : " + prix + " euros");
+        System.out.println("Prix total : " + p.calculerPrix() + " euros");
     }
     
     /*

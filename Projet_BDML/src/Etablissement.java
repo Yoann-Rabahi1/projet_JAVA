@@ -5,6 +5,10 @@
 
 import java.time.*;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileReader;
+import java.io.BufferedReader;
 
 /**
  *
@@ -557,6 +561,96 @@ public class Etablissement {
         if (!trouve)
             System.out.println("Aucun rendez-vous trouvé pour ce client.");
     }
+    
+    public boolean versFichierClients(String nomFichier)
+    {
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter(nomFichier, false);
+
+            for (Client c : clients) {
+                if (c != null) {
+                    fw.write(c.versFichier());
+                }
+            }
+
+            System.out.println("Sauvegarde des infos clients réussie dans " + nomFichier);
+            return true;
+
+        } catch (IOException e) {
+
+            System.err.println("Erreur dans la sauvegarde des infos clients : " + e.getMessage());
+            return false;
+
+        } finally {
+
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                    System.err.println("Erreur dans la fermeture du fichier : " + e.getMessage());
+                }
+            }
+        }
+    }
+    
+    public boolean depuisFichierClients(String nomFichier)
+    {
+        BufferedReader br = null;
+
+        try {
+            br = new BufferedReader(new FileReader(nomFichier));
+            String ligne;
+
+            int index = 0; // position dans le tableau clients
+
+            while ((ligne = br.readLine()) != null) {
+
+                // On ignore les lignes vides
+                if (ligne.trim().isEmpty()) continue;
+
+                // Découpage de la ligne
+                String[] infos = ligne.split(" : ");
+
+                if (infos.length != 4) {
+                    System.err.println("Ligne invalide : " + ligne);
+                    continue;
+                }
+
+                int numero = Integer.parseInt(infos[0]);
+                String nom = infos[1];
+                String tel = infos[2];
+                String mail = infos[3];
+
+                // Reconstruction du client
+                Client c = new Client(numero, nom, tel, mail);
+
+                // Ajout dans le tableau
+                clients[index++] = c;
+            }
+
+            System.out.println("Chargement des clients réussi depuis " + nomFichier);
+            return true;
+
+        } catch (IOException e) {
+
+            System.err.println("Erreur lors du chargement des clients : " + e.getMessage());
+            return false;
+
+        } finally {
+
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    System.err.println("Erreur lors de la fermeture du fichier : " + e.getMessage());
+                }
+            }
+        }
+    }
+
+
 
    
 }   

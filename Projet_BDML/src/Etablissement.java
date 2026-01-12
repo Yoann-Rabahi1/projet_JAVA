@@ -86,6 +86,20 @@ public class Etablissement {
     
     */
     
+    public Client rechercher(Client[] clients, int numeroClient)
+    {
+        for (Client c : clients)
+        {
+            if (c != null && c.getNumeroClient() == numeroClient)
+            {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    
+    
     public Client rechercher(Client[] clients, String nom, String numTel)
     {
         for (Client c : clients)
@@ -650,40 +664,93 @@ public class Etablissement {
         }
     }
     
-    public boolean versFichierRDV(String nomFichier)
+    public boolean depuisFichierRDV(String nomFichier)
     {
-        FileWriter fw = null;
+        BufferedReader br = null;
 
         try {
-            fw = new FileWriter(nomFichier, false);
+            br = new BufferedReader(new FileReader(nomFichier));
+            String ligne;
 
-            for (int i = 0; i < planningRDV.length; i++) {
-                for (int j = 0; j < planningRDV[i].length; j++) {
+            while ((ligne = br.readLine()) != null) {
 
-                    if (planningRDV[i][j] != null) {
-                        fw.write(planningRDV[i][j].versFichier());
-                    }
+                // 1) Lecture du créneau
+                LocalDateTime creneau = LocalDateTime.parse(ligne);
+
+                // 2) Lecture du numéro client
+                ligne = br.readLine();
+                int numeroClient = Integer.parseInt(ligne);
+
+                // 3) Lecture de la prestation
+                ligne = br.readLine();
+                String[] infosPrestation = ligne.split(" : ");
+
+                // infosPrestation[0] = catégorie
+                // infosPrestation[1] = a_nettoyer ou type salissure
+                // infosPrestation[2] = prix (pas nécessaire pour reconstruire)
+
+                Prestation.CategorieVehicule categorie =
+                        Prestation.CategorieVehicule.valueOf(infosPrestation[0]);
+
+                Prestation prestation;
+
+                // Détection du type de prestation
+                if (infosPrestation.length == 3 && (infosPrestation[1].equals("true") || infosPrestation[1].equals("false"))) {
+                    // Prestation Express
+                    boolean aNettoyer = Boolean.parseBoolean(infosPrestation[1]);
+                    prestation = new PrestationExpress(categorie, aNettoyer);
+
+                } else if (infosPrestation.length == 3 && infosPrestation[1].matches("[a-zA-Z]+")) {
+                    // Prestation Très Sale
+                    PrestationTresSale.TypeSalissure type =
+                            PrestationTresSale.TypeSalissure.valueOf(infosPrestation[1]);
+                    prestation = new PrestationTresSale(categorie, type);
+
+                } else {
+                    // Prestation Sale
+                    prestation = new PrestationSale(categorie);
+                }
+
+                // 4) Récupération du client
+                Client client = rechercher(clients, numeroClient);
+
+                if (client == null) {
+                    System.err.println("Client introuvable pour le numéro : " + numeroClient);
+                    continue;
+                }
+
+                // 5) Création du rendez-vous
+                RendezVous rdv = new RendezVous(client, prestation, creneau);
+
+                // 6) Placement dans le planning
+                int jour = creneau.getDayOfWeek().getValue() - 1;
+                int heure = getIndex(creneau.toLocalTime());
+
+                if (jour >= 0 && jour < 7 && heure >= 0 && heure < planningRDV.length) {
+                    planningRDV[heure][jour] = rdv;
                 }
             }
 
-            System.out.println("Sauvegarde des réservations réussie");
+            System.out.println("Chargement des rendez-vous réussi depuis " + nomFichier);
             return true;
 
         } catch (IOException e) {
 
-            System.err.println("Erreur dans la sauvegarde des réservations planifiées : " + e.getMessage());
+            System.err.println("Erreur lors du chargement des rendez-vous : " + e.getMessage());
             return false;
 
         } finally {
 
-            if (fw != null) {
+            if (br != null) {
                 try {
-                    fw.close();
+                    br.close();
                 } catch (IOException e) {
-                    System.err.println("Erreur dans la fermeture du fichier : " + e.getMessage());
+                    System.err.println("Erreur lors de la fermeture du fichier : " + e.getMessage());
                 }
             }
         }
     }
+
+
 
 }   

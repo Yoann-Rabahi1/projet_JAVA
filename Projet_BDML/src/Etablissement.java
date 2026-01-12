@@ -3,20 +3,31 @@
  * Class: Etablissement | Station de lavage
  * Name : Stéphane SINGERY, Yoann RABAHI, Teddy RAKOTOARIVELO
  * Group: ING1-APP-BDML2
- * Date : 2026-01-01
+ * Date : 2026-01-10
  */
 
 // Import packages
 package com.mycompany.station_de_lavage;
-import java.time.temporal.ChronoUnit;
-import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Scanner;
+import  java.time.temporal.ChronoUnit;
+import  java.time.LocalDateTime;
+import  java.time.LocalDate;
+import  java.time.LocalTime;
+import  java.util.Scanner;
+
+// Import FileW/R packages
+import  java.io.FileWriter;
+import  java.io.FileReader;
+import  java.io.BufferedReader;
+import  java.io.IOException;
 
 
 // Declare class
 class Etablissement {
+    
+    // ----------------------------- CONSTANTES FICHIERS
+
+    private static final String FICHIER_CLIENTS = "clients.txt";
+    private static final String FICHIER_RDV     = "rendez_vous.txt";
 
     // ----------------------------- CONSTANTES HORAIRES
 
@@ -87,15 +98,87 @@ class Etablissement {
 
     // ----------------------------- METHOD
     
+    // ------------- AJOUT CLIENTS
+    
+    /**
+     * NOM + TEL : Ajoute un client en fournissant son nom et son numéro de
+     * téléphone.
+     *
+     * @param nom nom du client
+     * @param telephone numéro de téléphone du client
+     * @return le client ajouté
+     */
+    public Client ajouter(String nom, String telephone) {
+
+        Client client = new Client(prochainNumeroClient, nom, telephone);
+
+        // Incrémentation du prochain numéro de client
+        prochainNumeroClient++;
+
+        // Insérer le client selon ordre lexicographique
+        insererClientTrie(client);
+
+        return client;
+
+    }
+
+    // -----
+    
+    /**
+     * NOM + TEL + @ : Ajoute un client en fournissant son nom, son numéro de
+     * téléphone et son adresse électronique.
+     *
+     * @param nom nom du client
+     * @param telephone numéro de téléphone du client
+     * @param email adresse électronique du client
+     * @return objet du client ajouté
+     */
+    public Client ajouter(String nom, String telephone, String email) {
+
+        Client client = new Client(prochainNumeroClient, nom, telephone, email);
+
+        // Incrémentation numéro de client
+        prochainNumeroClient++;
+
+        // Insérer le client selon ordre lexicographique
+        insererClientTrie(client);
+
+        return client;
+    }
+
+    // -----
+    
+    /**
+     * Insère un client dans le tableau en respectant l'ordre léxicographique.
+     */
+    private void insererClientTrie(Client client) {
+
+        int i = nbClients - 1;
+
+        // Décalage vers la droite des clients existants tant que nouveau client 
+        // est à placer avant
+        while (i >= 0 && clients[i].placerApres(client)) {
+            clients[i + 1] = clients[i];
+            i--;
+        }
+
+        // Insére le client
+        clients[i + 1] = client;
+
+        // Mise à jour du nomdre de clients
+        nbClients++;
+    }
+    
     // ------------- RECHERCHE CLIENT
     
     /**
-    * Recherche un client à partir de son nom et de son numéro de téléphone
-    * 
-    * @param nom       le nom du client recherché
-    * @param telephone le numéro de téléphone du client recherché
-    * @return          le client trouvé, ou null s'il n'existe pas
-    */
+     * Tél / @ :
+     * Recherche un client à partir de son nom et de son numéro de téléphone
+     * 
+     * @param nom       le nom du client recherché
+     * @param telephone le numéro de téléphone du client recherché
+     * @return          le client trouvé, ou null s'il n'existe pas
+     */
     public Client rechercher(String nom, String telephone) {
 
         for (int i = 0; i < nbClients; i++) {
@@ -113,75 +196,30 @@ class Etablissement {
         return null;
     }
     
-    // ------------- AJOUT CLIENTS
+    // -----
     
     /**
-     * Ajoute un client en fournissant son nom et son numéro de téléphone.
+     * NUMERO CLIENT :
+     * Recherche un client à partir de son numéro client.
      *
-     * @param nom       nom du client
-     * @param telephone numéro de téléphone du client
-     * @return          le client ajouté
+     * @param numeroClient le numéro du client recherché
+     * @return             le client trouvé ou null s'il n'existe pas
      */
-    public Client ajouter(String nom, String telephone) {
+    public Client rechercher(int numeroClient) {
 
-        Client client = new Client(prochainNumeroClient, nom, telephone);
-        
-        // Incrémentation du prochain numéro de client
-        prochainNumeroClient++;
-
-        // Insérer le client selon ordre lexicographique
-        insererClientTrie(client);
-        
-        return client;
-        
-    }    
-        
-    // -----
-
-    /**
-     * Ajoute un client en fournissant son nom, son numéro de téléphone et son
-     * adresse électronique.
-     *
-     * @param nom       nom du client
-     * @param telephone numéro de téléphone du client
-     * @param email     adresse électronique du client
-     * @return          objet du client ajouté
-     */
-    public Client ajouter(String nom, String telephone, String email) {
-
-        Client client = new Client(prochainNumeroClient, nom, telephone, email);
-        
-        // Incrémentation numéro de client
-        prochainNumeroClient++;
-
-        // Insérer le client selon ordre lexicographique
-        insererClientTrie(client);
-        
-        return client;
-    }
-    
-    // -----
-
-    /**
-     * Insère un client dans le tableau en respectant l'ordre.
-     */
-    private void insererClientTrie(Client client) {
-
-        int i = nbClients - 1;
-
-        // Décalage vers la droite des clients existants tant que nouveau client 
-        // est à placer avant
-        while (i >= 0 && clients[i].placerApres(client)) {
-            clients[i + 1] = clients[i];
-            i--;
+        for (int i = 0; i < nbClients; i++) {
+            
+            Client client = clients[i];
+            
+            // Client trouvé
+            if (client.getNumeroClient() == numeroClient) {
+                return client;
+            }
         }
-
-        // Insérer le client
-        clients[i + 1] = client;
         
-        // Mise à jour du nomdre de clients
-        nbClients++;
-    }
+        // Aucun client trouvé
+        return null;
+    }       
     
     // ------------- RECHERCHE CRENEAU
     
@@ -237,7 +275,7 @@ class Etablissement {
 
             if (!verifierFormatHeure(heureSaisie)) {    
                 System.out.println(
-                    "Format heure fournie invalide. Exemple attendu : 10:30"
+                    "Format heure fournie invalide. Exemple format attendu : 10:30"
                 );
             }
 
@@ -251,7 +289,7 @@ class Etablissement {
     // -----
     
     /**
-     * Vérifie si une chaîne de caractères respecte le format dd/MM/yyyy
+     * Vérifie si une chaîne de caractères respecte le format yyyy-MM-dd
      *
      * @param string_   chaîne de caractères
      * @return          boolean true ou false
@@ -264,7 +302,7 @@ class Etablissement {
         }
 
         // Vérifie les sépérateurs
-        if (string_.charAt(2) != '/' || string_.charAt(5) != '/') {
+        if (string_.charAt(4) != '-' || string_.charAt(7) != '-') {
             return false;
         }
 
@@ -294,17 +332,17 @@ class Etablissement {
     /**
      * Lecture et check d'une date fournie par l'utilisateur.
      */
-    private LocalDate lireDate(Scanner sc) {
+    private LocalDate lireJour(Scanner sc) {
 
         String dateSaisie;
 
         do {
-            System.out.print("Entrez une date (dd/MM/yyyy) : ");
+            System.out.print("Entrez une date (yyyy-MM-dd) : ");
             dateSaisie = sc.nextLine();
 
             if (!verifierFormatDate(dateSaisie)) {
                 System.out.println(
-                    "Format date fournie invalide. Exemple attendu : 01/01/2026"
+                    "Format date fournie invalide. Exemple format attendu : 2026-01-01"
                 );
             }
 
@@ -318,6 +356,7 @@ class Etablissement {
     // -----
     
     /**
+     * JOUR :
      * Recherche les créneaux horaires disponibles dans une journée et retourne 
      * celui sélectionné par l'utilisateur
      * 
@@ -366,6 +405,7 @@ class Etablissement {
             }
         }
 
+        // Aucun créneau indisponible
         System.out.println("Créneau indisponible.");
         return null;
     }
@@ -373,6 +413,7 @@ class Etablissement {
     // -----
     
     /**
+     * HEURE :
      * Recherche les dates pour lesquelles un créneau horaire spécifique
      * est disponible.
      * 
@@ -411,7 +452,7 @@ class Etablissement {
         // ------------- CHOIX UTILISATEUR
         
         // Lecture du choix de l'utilisateur
-        LocalDate jourSaisi = lireDate(sc);
+        LocalDate jourSaisi = lireJour(sc);
 
         // Vérification que le créneau est libre (double check)
         for (int j = 0; j < NB_JOURS; j++) {
@@ -421,6 +462,7 @@ class Etablissement {
             }
         }
 
+        // Aucun créneau indisponible
         System.out.println("Créneau indisponible.");
         return null;
     }
@@ -563,7 +605,7 @@ class Etablissement {
         Client        client,
         LocalDateTime creneau,
         char          categorieVehicule,
-        int           typeSalissure
+        int[]         typesSalissure
     ) {
 
         // Vérifie que la date est bien dans les n jours du planning
@@ -582,7 +624,7 @@ class Etablissement {
 
         // Création de la prestation pour véhicule très sale
         Prestation prestation
-                = new PrestationTresSale(categorieVehicule, typeSalissure);
+                = new PrestationTresSale(categorieVehicule, typesSalissure);
 
         // Création du rendez-vous
         RendezVous rdv = new RendezVous(creneau, client, prestation);
@@ -593,6 +635,277 @@ class Etablissement {
         return rdv;
     }
     
+    // ------------- PLANIFICATION
+    
+    /**
+     * Planifie un rendez-vous pour le nettoyage d'un véhicule. Cette méthode
+     * orchestre différentes étapes : 
+     * - identification du client
+     * - choix du créneau
+     * - choix de la prestation
+     * - ajout du rendez-vous
+     * - affichage du prix.
+     */
+    public void planifier() {
+
+        Scanner sc = new Scanner(System.in);
+
+        // ---------------- IDENTIFICATION DU CLIENT
+        
+        System.out.print("Nom du client : ");
+        String nom = sc.nextLine();
+
+        System.out.print("Numéro de téléphone : ");
+        String telephone = sc.nextLine();
+
+        Client client = this.rechercher(nom, telephone);
+
+        // Si le client n'existe pas, il est créée
+        if (client == null) {
+            System.out.println("Nouveau client, création en cours...");
+            client = this.ajouter(nom, telephone);
+        }
+
+        // ---------------- CHOIX DU CRENEAU (7 jours)
+        
+        System.out.println("Choix du créneau :");
+        System.out.println("1 - Par jour");
+        System.out.println("2 - Par heure");
+
+        int choix = sc.nextInt();
+        sc.nextLine();
+
+        LocalDateTime creneau = null;
+
+        if (choix == 1) {
+            LocalDate jour = lireJour(sc);
+            creneau = this.rechercher(jour);
+        } else if (choix == 2) {
+            LocalTime heure = lireHeure(sc);
+            creneau = this.rechercher(heure);
+        }
+
+        if (creneau == null) {
+            System.out.println("Impossible de planifier le rendez-vous.");
+            return;
+        }
+
+        // ---------------- CHOIX TYPE DE PRESTATION
+        
+        System.out.println("Type de prestation :");
+        System.out.println("1 - Prestation Express");
+        System.out.println("2 - Véhicule Sale");
+        System.out.println("3 - Véhicule Très Sale");
+
+        int type = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Catégorie du véhicule (A, B, C) : ");
+        char categorie = sc.nextLine().charAt(0);
+
+        RendezVous rdv = null;
+
+        // ---------------- INFO SPÉCIFIQUE / AJOUT RENDEZ-VOUS
+        
+        if (type == 1) {
+            System.out.print("Nettoyage intérieur (true/false) : ");
+            boolean interieur = sc.nextBoolean();
+
+            rdv = this.ajouter(client, creneau, categorie, interieur);
+
+        } else if (type == 2) {
+
+            rdv = this.ajouter(client, creneau, categorie);
+
+        } else if (type == 3) {
+
+            System.out.print("Nombre de types de salissure : ");
+            int n = sc.nextInt();
+
+            int[] types = new int[n];
+            for (int i = 0; i < n; i++) {
+                System.out.print("Type de salissure " + (i + 1) + " : ");
+                types[i] = sc.nextInt();
+            }
+
+            rdv = this.ajouter(client, creneau, categorie, types);
+        }
+
+        // ---------------- AFFICHAGE DU RESULTAT
+        
+        if (rdv != null) {
+            System.out.println("Rendez-vous confirmé.");
+            System.out.println("Prix de la prestation : "
+                + rdv.getPrestation().prixNettoyage() + " €");
+        } else {
+            System.out.println("Erreur lors de la planification.");
+        }
+    }
+    
+    // ------------- LECTURE / ECRITURE FICHIER
+    
+    /**
+     * ECRITURE FICHIER CLIENTS :
+     * Ecrit dans un fichier texte les informations relatives aux clients de
+     * l'établissement. 
+     * Utilise la méthode "Client.versFichier()"
+     */
+    public void versFichierClients() throws IOException {
+
+        FileWriter fich = new FileWriter(FICHIER_CLIENTS);
+
+        // Ecriture des info client par client
+        for (int i = 0; i < nbClients; i++) {
+            fich.write(clients[i].versFichier());
+        }
+
+        // Force fermeture du fichier
+        fich.close();
+    }
+    
+    // -----
+    
+    /**
+     * LECTURE FICHIER / RECHARGE LISTE CLIENTS :
+     * Recharge l’ensemble des clients de l'établissement à partir 
+     * d’un fichier texte.
+     */
+    public void depuisFichierClients() throws IOException {
+
+        FileReader fich = new FileReader(FICHIER_CLIENTS);
+        BufferedReader br = new BufferedReader(fich);
+
+        this.nbClients = 0;
+        int maxNumero = 0;
+
+        String ligne = br.readLine();
+
+        while (ligne != null) {
+
+            // Sépare les différentes informations contenues dans la ligne
+            String[] tabIinfos = ligne.split(" : ");
+
+            // Map chacune des informations avec la variable associée
+            int    numero = Integer.parseInt(tabIinfos[0]);
+            String nom    = tabIinfos[1];
+            String tel    = tabIinfos[2];
+
+            Client c;
+
+            /** Gère les deux dégrés d'attribut à partir desquels un client
+             * peut être créée (3 ou 4 attributs -> sans ou avec @).
+             * 
+             * Crée le client.
+             */ 
+            if (tabIinfos.length == 4) {
+                c = new Client(numero, nom, tel, tabIinfos[3]);
+            } else {
+                c = new Client(numero, nom, tel);
+            }
+
+            // Incrémenter le nombre de clients
+            clients[this.nbClients] = c;
+            this.nbClients++;
+            
+            // 🔑 Mise à jour du plus grand numéro client
+            if (numero > maxNumero) {
+                maxNumero = numero;
+            }
+
+            // Lit la ligne suivante
+            ligne = br.readLine();
+        }
+
+        // Force fermeture du fichier
+        br.close();
+        
+        // 🔑 Numérotation continue après chargement
+        this.prochainNumeroClient = maxNumero + 1;
+        
+    }
+
+    // -----
+    
+    /**
+     * ECRITURE FICHIER RENDEZ-VOUS:
+     * Ecrit dans un fichier texte les informations relatives au rendez-vous de
+     * l'etablissement.
+     * Utilise la méthode "RendezVous.versFichier()"
+     */
+    public void versFichierRendezVous() throws IOException {
+
+        FileWriter fich = new FileWriter(FICHIER_RDV);
+
+        // Ecriture des info rdv par rdv
+        for (int i = 0; i < NB_CRENEAUX; i++) {
+            for (int j = 0; j < NB_JOURS; j++) {
+                if (planning[i][j] != null) {
+                    fich.write(planning[i][j].versFichier());
+                }
+            }
+        }
+
+        // Force fermeture du fichier
+        fich.close();
+    }
+
+    // -----
+    
+    /**
+     * LECTURE FICHIER / RECHARGE LISTE RENDEZ-VOUS :
+     * Recharge l’ensemble des rendez-vous de l'établissement à partir 
+     * d’un fichier texte.
+     */
+    
+    public void depuisFichierRendezVous() throws IOException {
+
+        FileReader fich = new FileReader(FICHIER_RDV);
+        BufferedReader br = new BufferedReader(fich);
+
+        String ligneRendezVous = br.readLine();
+
+        while (ligneRendezVous != null) {
+
+            // Lit le timestamp relatif au créneau
+            LocalDateTime creneau = LocalDateTime.parse(ligneRendezVous);
+
+            // Retrouve le client à partir de son numéro unique
+            String ligneNumero = br.readLine();
+            int numeroClient = Integer.parseInt(ligneNumero);
+            Client client = rechercher(numeroClient);
+            
+            // ⚠️ TOUJOURS lire la ligne prestation
+            String lignePrestation = br.readLine();
+            
+            if (client == null) {
+                System.out.println("Client inconnu : " + numeroClient);
+                ligneRendezVous = br.readLine();
+                continue;
+            }
+
+            // Identifie le type de prestation
+            Prestation prestation = prestationResolution.depuisFichier(
+                lignePrestation
+            );
+
+            // Identifie jour et horaire du créneau
+            int i = indiceCreneau(creneau.toLocalTime());
+            int j = indiceJour(creneau.toLocalDate());
+
+            // Crée le rendez-vous
+            if (i != -1 && j != -1) {
+                planning[i][j] = new RendezVous(creneau, client, prestation);
+            }
+
+            // Passe au rendez-vous suivant
+            ligneRendezVous = br.readLine();
+        }
+
+        // Force fermeture du fichier
+        br.close();
+    }
+
+   
     // ------------- AFFICHE
 
     /**
@@ -644,4 +957,101 @@ class Etablissement {
             System.out.println();
         }
     }
+    
+    // -----
+    
+    /**
+     * AFFICHER PLANNING JOUR :
+     * Affiche le planning des rendez-vous pour un jour donné.
+     *
+     * @param jour le jour pour lequel afficher le planning
+     */
+    public void afficher(LocalDate jour) {
+
+        int j = indiceJour(jour);
+
+        // Vérifie que le jour est dans les 7 jours du planning
+        if (j == -1) {
+            System.out.println("Jour hors planning.");
+            return;
+        }
+
+        System.out.println("Planning pour le " + jour + " :");
+
+        for (int i = 0; i < NB_CRENEAUX; i++) {
+            System.out.print(creneaux[i] + " : ");
+
+            if (planning[i][j] == null) {
+                System.out.println("LIBRE");
+            } else {
+                System.out.println(
+                        planning[i][j].getClient().getNom()
+                );
+            }
+        }
+    }
+    
+    // -----
+    
+    /**
+     * Affiche les clients correspondant à un nom ou un numéro de téléphone.
+     *
+     * @param recherche le nom ou le numéro de téléphone recherché
+     */
+    public void afficher(String nomTelephone) {
+
+        boolean clientTrouve = false;
+
+        for (int i = 0; i < nbClients; i++) {
+
+            Client c = clients[i];
+
+            if (c.getNom().equalsIgnoreCase(nomTelephone)
+                    || c.getTelephone().equals(nomTelephone)) {
+
+                System.out.println(c);
+                clientTrouve = true;
+            }
+        }
+
+        if (!clientTrouve) {
+            System.out.println("Aucun client correspondant.");
+        }
+    }
+    
+    // -----
+    
+    /**
+     * Affiche les rendez-vous pris par un client donné.
+     *
+     * @param numeroClient le numéro du client
+     */
+    public void afficher(int numeroClient) {
+
+        boolean clientTrouve = false;
+
+        for (int i = 0; i < NB_CRENEAUX; i++) {
+            for (int j = 0; j < NB_JOURS; j++) {
+
+                if (planning[i][j] != null) {
+                    
+                    RendezVous rdv = planning[i][j];
+
+                    Client c = rdv.getClient();
+
+                    if (c.getNumeroClient() == numeroClient) {
+                        System.out.println(rdv);
+                        clientTrouve = true;
+                    }
+                }
+            }
+        }
+
+        if (!clientTrouve) {
+            System.out.println("Aucun rendez-vous pour ce client.");
+        }
+    }
+
+
+
 }

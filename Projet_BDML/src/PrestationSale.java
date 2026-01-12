@@ -3,7 +3,7 @@
  * Class: PrestationSale | Station de lavage
  * Name : Stéphane SINGERY, Yoann RABAHI, Teddy RAKOTOARIVELO
  * Group: ING1-APP-BDML2
- * Date : 2026-01-01
+ * Date : 2026-01-10
  */
 
 // Import packages
@@ -20,10 +20,10 @@ class PrestationSale extends Prestation {
 
     // ----------------------------- METHOD 
     
-    // ------------- OVERRIDE
+    // ------------- OVERRIDE / PRIX
     
     /**
-     * Prix total d'une prestation pour véhicule sale :
+     * Calcul du prix total d'une prestation pour véhicule sale.
      * Aucun surcoût produit n'est prévu pour cette prestation.
      */
     @Override
@@ -34,6 +34,23 @@ class PrestationSale extends Prestation {
             + super.prixSechage()
             + super.prixNettoyageInterieur();
     }
+    
+    // ------------- OVERRIDE / LECTURE ECRITURE FICHIER
+    
+    /**
+     * Forme une chaîne de caractère composées des informations relatives à
+     * une Prestation Sale.
+     */
+    @Override
+    public String versFichier() {
+
+        // Format : "B : 78"
+        return this.categorieVehicule
+            + " : "
+            + (int) this.prixNettoyage();
+    }
+    
+    // ------------- OVERRIDE / AFFICHE
     
     /**
      * Retourne un String composé des informations de la Prestation Sale.

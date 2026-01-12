@@ -3,19 +3,19 @@
  * Class: RendezVous | Station de lavage
  * Name : Stéphane SINGERY, Yoann RABAHI, Teddy RAKOTOARIVELO
  * Group: ING1-APP-BDML2
- * Date : 2026-01-01
+ * Date : 2026-01-10
  */
 
 // Import packages
 package com.mycompany.station_de_lavage;
-import java.time.LocalDateTime;
+import  java.time.LocalDateTime;
 
 // Declare class
 class RendezVous {
 
     // ----------------------------- ATTRIBUTES
 
-    private LocalDateTime creneau;    // 
+    private LocalDateTime creneau;    // 2024-08-12T10:00
     private Client        client;     // Object Client
     private Prestation    prestation; // Object Prestation
     private double        prix;       // (ex. 65.75) Prix € calculé du nettoyage
@@ -72,7 +72,27 @@ class RendezVous {
 
     // ----------------------------- METHOD
     
-    // ------------- OVERRIDE
+    // ------------- LECTURE / ECRITURE FICHIER
+    
+    /**
+     * Forme une chaîne de caractère composées des informations relatives à
+     * un rendez-vous.
+     */
+    public String versFichier() {
+
+        // Info relatives au RendezVous
+        String ch = creneau.toString() + System.lineSeparator();
+        
+        // Info relatives au Client
+        ch = ch + client.getNumeroClient() + System.lineSeparator();
+        
+        // Infor relatives à la Prestation
+        ch = ch + prestation.versFichier() + System.lineSeparator();
+
+        return ch;
+    }
+    
+    // ------------- OVERRIDE / AFFICHE           
 
     /**
      * Retourne un String composé des informations relatives à un rendez-vous.

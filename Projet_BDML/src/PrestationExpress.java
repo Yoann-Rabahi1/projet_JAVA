@@ -3,7 +3,7 @@
  * Class: PrestationExpress | Station de lavage
  * Name : Stéphane SINGERY, Yoann RABAHI, Teddy RAKOTOARIVELO
  * Group: ING1-APP-BDML2
- * Date : 2026-01-01
+ * Date : 2026-01-10
  */
 
 // Import packages
@@ -40,7 +40,7 @@ class PrestationExpress extends Prestation {
 
     // ----------------------------- METHOD
     
-    // ------------- OVERRIDE
+    // ------------- OVERRIDE / PRIX
 
     @Override
     /**
@@ -56,9 +56,11 @@ class PrestationExpress extends Prestation {
         return super.prixNettoyageInterieur();
     }
     
+    // -----
+    
     @Override
     /**
-     * Prix total d'une prestation express.
+     * Calcul du prix total d'une prestation express.
      */
     public double prixNettoyage() {
         return 
@@ -66,6 +68,25 @@ class PrestationExpress extends Prestation {
             + super.prixSechage() 
             + this.prixNettoyageInterieur();
     }
+    
+    // ------------- OVERRIDE / LECTURE ECRITURE FICHIER
+    
+    /**
+     * Forme une chaîne de caractère composées des informations relatives à
+     * une Prestation Express.
+     */
+    @Override
+    public String versFichier() {
+
+        // Format : "A : true : 60"
+        return this.categorieVehicule
+            + " : "
+            + this.nettoyerInterieur
+            + " : "
+            + (int) this.prixNettoyage();
+    }
+   
+    // ------------- OVERRIDE / AFFICHE
 
     @Override
     /**

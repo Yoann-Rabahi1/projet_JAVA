@@ -649,8 +649,41 @@ public class Etablissement {
             }
         }
     }
+    
+    public boolean versFichierRDV(String nomFichier)
+    {
+        FileWriter fw = null;
 
+        try {
+            fw = new FileWriter(nomFichier, false);
 
+            for (int i = 0; i < planningRDV.length; i++) {
+                for (int j = 0; j < planningRDV[i].length; j++) {
 
-   
+                    if (planningRDV[i][j] != null) {
+                        fw.write(planningRDV[i][j].versFichier());
+                    }
+                }
+            }
+
+            System.out.println("Sauvegarde des réservations réussie");
+            return true;
+
+        } catch (IOException e) {
+
+            System.err.println("Erreur dans la sauvegarde des réservations planifiées : " + e.getMessage());
+            return false;
+
+        } finally {
+
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                    System.err.println("Erreur dans la fermeture du fichier : " + e.getMessage());
+                }
+            }
+        }
+    }
+
 }   

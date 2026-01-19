@@ -41,4 +41,10 @@ public class PrestationTresSale extends Prestation {
     public double nettoyage() {
         return prelavage() + lavage() + sechage() + nettoyageInterieur();
     }
+    
+    @Override
+    public String versFichier(double prix) {
+        return getCategorie() + " : " + salissure + " : " + (int)prix;
+    }
+
 }

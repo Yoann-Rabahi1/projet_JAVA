@@ -49,4 +49,9 @@ public class RendezVous {
                " | Date/Heure : " + dateHeure +
                " | Prix : " + prix + "€]";
     }
+    
+    public String versFichier() {
+        return dateHeure.toString() + "\n" + client.getNumClient() + "\n" + prestation.versFichier(prix);
+    }
+
 }

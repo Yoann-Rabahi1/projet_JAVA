@@ -84,4 +84,12 @@ public class Client {
 
     }
     
+    public String versFichier() {
+        if (email == null || email.isEmpty()) {
+            return numClient + " : " + nom + " : " + numTel;
+        } else {
+            return numClient + " : " + nom + " : " + numTel + " : " + email;
+        }
+    }
+ 
 }

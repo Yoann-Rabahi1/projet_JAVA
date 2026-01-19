@@ -1,5 +1,9 @@
 package Station;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -196,26 +200,23 @@ public class Etablissement {
     
 
     // Ajouter rdv pour Prestation Express
-    public RendezVous ajouterRdv(Client client, LocalDateTime dateHeure, Prestation.CategVehicule categorie, boolean nettoyageInterieur) {
-        // Calcul de la ligne dans le planning selon l'heure 
+    public RendezVous ajouterRdv(Client client, LocalDateTime dateHeure,Prestation.CategVehicule categorie, boolean nettoyageInterieur) {
+
         int ligne = (dateHeure.getHour() - 10) * 2 + (dateHeure.getMinute() == 30 ? 1 : 0);
 
-        // on calcul le jour dans le planning par rapport au debut
-        int colonne = dateHeure.getDayOfMonth() - debutPlanning.getDayOfMonth();
+        int colonne = (int) LocalDate.now().until(dateHeure.toLocalDate(),
+                       java.time.temporal.ChronoUnit.DAYS);
 
-        // on verifie si c'est pas au dessus ou en dessous de la limite
         if (ligne < 0 || ligne >= nbCreneaux || colonne < 0 || colonne >= 7) {
             System.out.println("Erreur : creneau hors limites !");
             return null;
         }
 
-        // on verifie si le creneau est dejà occupe
         if (planning[ligne][colonne] != null) {
             System.out.println("Erreur : creneau dejà occupe !");
             return null;
         }
 
-        // Creation de la prestation et du RDV
         PrestationExpress prestation = new PrestationExpress(categorie, nettoyageInterieur);
         RendezVous rdv = new RendezVous(client, prestation, dateHeure);
         planning[ligne][colonne] = rdv;
@@ -223,10 +224,14 @@ public class Etablissement {
         return rdv;
     }
 
+
     //  Ajouter rdv pour Prestation Sale 
     public RendezVous ajouterRdv(Client client, LocalDateTime dateHeure, Prestation.CategVehicule categorie) {
+
         int ligne = (dateHeure.getHour() - 10) * 2 + (dateHeure.getMinute() == 30 ? 1 : 0);
-        int colonne = dateHeure.getDayOfMonth() - debutPlanning.getDayOfMonth();
+
+        int colonne = (int) LocalDate.now().until(dateHeure.toLocalDate(),
+                       java.time.temporal.ChronoUnit.DAYS);
 
         if (ligne < 0 || ligne >= nbCreneaux || colonne < 0 || colonne >= 7) {
             System.out.println("Erreur : creneau hors limites !");
@@ -245,10 +250,14 @@ public class Etablissement {
         return rdv;
     }
 
+
     // --- Ajouter rdv pour Prestation Très Sale ---
     public RendezVous ajouterRdv(Client client, LocalDateTime dateHeure, Prestation.CategVehicule categorie, int typeSalissure) {
+
         int ligne = (dateHeure.getHour() - 10) * 2 + (dateHeure.getMinute() == 30 ? 1 : 0);
-        int colonne = dateHeure.getDayOfMonth() - debutPlanning.getDayOfMonth();
+
+        int colonne = (int) LocalDate.now().until(dateHeure.toLocalDate(),
+                       java.time.temporal.ChronoUnit.DAYS);
 
         if (ligne < 0 || ligne >= nbCreneaux || colonne < 0 || colonne >= 7) {
             System.out.println("Erreur : creneau hors limites !");
@@ -267,5 +276,312 @@ public class Etablissement {
         return rdv;
     }
 
-}
+    
+    
+    public void planifier() {
+    Scanner sc = new Scanner(System.in);
 
+    // --- 1. Demander infos client ---
+    System.out.print("Ton nom ? : ");
+    String nom = sc.nextLine();
+
+    System.out.print("Ton num de tel ?: ");
+    String tel = sc.nextLine();
+
+    // --- 2. Chercher le client ---
+    Client client = rechercher(nom, tel);
+
+    // --- 3. Créer si nouveau ---
+    if (client == null) {
+        System.out.println("Tu es nouveaux dans la liste");
+        client = ajouter(nom, tel); 
+    }
+
+    // --- 4. Choix du créneau ---
+    System.out.println("\nComment veux tu chercher un créneau? ");
+    System.out.println("(1) - Choisir un jour puis une heure");
+    System.out.println("(2) - Choisir une heure puis un jour");
+    int choixRecherche = sc.nextInt();
+
+    LocalDateTime dateHeure = null;
+    if (choixRecherche == 1) {
+        System.out.print("Choisi un jour de 1 à 7 : ");
+        int jour = sc.nextInt();
+        dateHeure = rechercherCreneauJour(jour);
+    } else if (choixRecherche == 2) {
+        System.out.print("Heure (ex : 10 pour 10h00) : ");
+        int heure = sc.nextInt();
+        dateHeure = rechercherCreneauHeure(LocalTime.of(heure, 0));
+    }
+
+    if (dateHeure == null) {
+        System.out.println("Aucun créneau sélectionné. Annulation.");
+        return;
+    }
+
+    // --- 5. Choix prestation ---
+    System.out.println("\nType de prestation : ");
+    System.out.println("(1) -> Express");
+    System.out.println("(2) -> Sale");
+    System.out.println("(3) ->Très sale");
+    
+    int choix = sc.nextInt();
+
+    System.out.println("Catégorie du véhicule : (1) -> A, (2) -> B, (3) -> C)");
+    int cat = sc.nextInt();
+    Prestation.CategVehicule categorie = Prestation.CategVehicule.values()[cat - 1];
+
+    RendezVous rdv = null;
+
+    // --- 6. Ajout RDV selon type ---
+    switch (choix) {
+        case 1:
+            System.out.print("Nettoyage intérieur ? (1) -> oui, (0) -> non) : ");
+            int inter = sc.nextInt();
+            boolean nettoyerInterieur = (inter == 1);
+            rdv = ajouterRdv(client, dateHeure, categorie, nettoyerInterieur);
+            break;
+
+        case 2:
+            rdv = ajouterRdv(client, dateHeure, categorie);
+            break;
+
+        case 3:
+            System.out.print("Type de salissure (1 -> Graisse, 2 -> Boue, 3 -> Poussière) : ");
+            int salissure = sc.nextInt();
+            rdv = ajouterRdv(client, dateHeure, categorie, salissure);
+            break;
+
+        default:
+            System.out.println("Inconnu");
+            return;
+    }
+
+    // --- 7. Affichage du résultat ---
+    if (rdv != null) {
+        System.out.println("\nTon rdv a été créé !!!!!!");
+        System.out.println("Prix total : " + rdv.getPrix() + "€");
+    } 
+    else 
+        System.out.println("Erreur durant la création du rendez-vous.");
+    
+    }
+    
+    
+     // afficher : planning d’un jour
+    public void afficher(int jour) {
+        Scanner sc = new Scanner(System.in);
+
+        if (jour < 1 || jour > 7) {
+            System.out.println("Jour invalide.");
+            return;
+        }
+
+        int indiceJour = jour - 1;
+        System.out.println("\n--- Planning du jour " + jour + " ---");
+
+        for (int i = 0; i < nbCreneaux; i++) {
+            LocalTime heure = LocalTime.of(10, 0).plusMinutes(i * 30);
+            System.out.print(heure + " : ");
+
+            if (planning[i][indiceJour] == null) {
+                System.out.println("Libre");
+            } else {
+                System.out.println(planning[i][indiceJour]);
+            }
+        }
+    }
+    
+    // afficher : nom ou un num de téléphone
+    public void afficher(String rech) {
+
+        boolean found = false;
+
+        for (int i = 0; i < nbClients; i++) {
+            Client c = clients[i];
+            if (c.getNom().equalsIgnoreCase(rech) || c.getNumTel().equals(rech)) {
+                System.out.println(c);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Aucun client trouvé.");
+        }
+    }
+
+    // afficher : num client
+    public void afficher(int numClient, boolean rdv) {
+
+        boolean found = false;
+
+        for (int jour = 0; jour < 7; jour++) {
+            for (int ligne = 0; ligne < nbCreneaux; ligne++) {
+                RendezVous rdvObj = planning[ligne][jour];
+                if (rdvObj != null && rdvObj.getClient().getNumClient() == numClient) {
+                    System.out.println(rdvObj);
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            System.out.println("Ce client n'a pas de rendez-vous.");
+        }
+    }
+    
+    
+    
+    public void versFichierClients(String nomF) {
+        try {
+            FileWriter fw = new FileWriter(nomF, false); 
+
+            for (int i = 0; i < nbClients; i++) {
+                fw.write(clients[i].versFichier() + System.lineSeparator());
+            }
+
+            fw.close();
+            System.out.println("Clients sauvegardés dans le fichier.");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de l'écriture du fichier clients.");
+        }
+    }
+    
+    
+    public void depuisFichierClients(String nomF) {
+            try {
+                FileReader fr = new FileReader(nomF);
+                BufferedReader br = new BufferedReader(fr);
+                nbClients = 0;
+                String ligne;
+                while ((ligne = br.readLine()) != null) {
+                    String[] parties = ligne.split(" : ");
+                    int num = Integer.parseInt(parties[0]);
+                    String nom = parties[1];
+                    String tel = parties[2];
+                    Client c;
+
+                    // si ya le mail
+                    if (parties.length == 4) {
+                        String email = parties[3];
+                        c = new Client(num, nom, tel, email);
+                    } else {
+                        c = new Client(num, nom, tel);
+                    }
+                    clients[nbClients] = c;
+                    nbClients+=1;
+                }
+                br.close();
+                fr.close();
+                System.out.println("Clients chargé");
+            } catch (IOException | NumberFormatException e) {
+                System.out.println("Erreur ");
+            }
+        }
+        
+        
+        
+        public void versFichierRDV(String nomF) {
+            try {
+                FileWriter fw = new FileWriter(nomF, false);
+                for (int jour = 0; jour < 7; jour++) {
+                    for (int ligne = 0; ligne < nbCreneaux; ligne++) {
+                        RendezVous rdv = planning[ligne][jour];
+                        if (rdv != null) {
+                            fw.write(rdv.versFichier() + System.lineSeparator());
+                        }
+                    }
+                }
+                fw.close();
+                System.out.println("c'est sauvegardé");
+            } catch (IOException e) {
+                System.out.println("Erreur");
+            }
+        }
+        
+     private Client rechercherParNumero(int num) {
+        for (int i = 0; i < nbClients; i++) {
+            if (clients[i].getNumClient() == num) 
+                return clients[i];
+        }
+        return null;
+     }
+     
+    public void depuisFichierRDV(String nomFichier) {
+        try {
+            FileReader fr = new FileReader(nomFichier);
+            BufferedReader br = new BufferedReader(fr);
+
+            // On vide le planning
+            for (int j = 0; j < 7; j++) {
+                for (int l = 0; l < nbCreneaux; l++) {
+                    planning[l][j] = null;
+                }
+            }
+
+            String dateStr;
+            while ((dateStr = br.readLine()) != null) {
+
+                String numStr = br.readLine();
+                String prestStr = br.readLine();
+
+                LocalDateTime dateHeure = LocalDateTime.parse(dateStr);
+                int numClient = Integer.parseInt(numStr);
+
+                Client client = rechercherParNumero(numClient);
+
+                String[] parts = prestStr.split(" : ");
+
+              
+                Prestation.CategVehicule categorie = Prestation.CategVehicule.valueOf(parts[0]);
+                Prestation prestation = null;
+
+                // PrestationExpress 
+                if (parts.length == 3 && (parts[1].equals("true") || parts[1].equals("false"))) {
+                    boolean inter = Boolean.parseBoolean(parts[1]);
+                    prestation = new PrestationExpress(categorie, inter);
+                }
+
+                //PrestationSale
+                else if (parts.length == 2) {
+                    prestation = new PrestationSale(categorie);
+                }
+
+                //PrestationTresSale
+                else if (parts.length == 3) {
+                    int salissure = Integer.parseInt(parts[1]);
+                    prestation = new PrestationTresSale(categorie, salissure);
+                }
+
+                else {
+                    System.out.println("Format rdv incorrect: " + prestStr);
+                    continue;
+                }
+
+                double prix = prestation.nettoyage();
+                RendezVous rdv = new RendezVous(client, prestation, dateHeure);
+                placerRdvDansPlanning(rdv);
+            }
+
+            br.close();
+            fr.close();
+            System.out.println("RDV chargés depuis le fichier.");
+
+        } catch (Exception e) {
+            System.out.println("Erreur lecture fichier RDV.");
+        }
+    }
+
+    
+    private void placerRdvDansPlanning(RendezVous rdv) {
+        LocalDateTime d = rdv.getDateHeure();
+
+        int jour = (int) LocalDate.now().until(d.toLocalDate(), java.time.temporal.ChronoUnit.DAYS);
+        int ligne = (int) LocalTime.of(10, 0).until(d.toLocalTime(), java.time.temporal.ChronoUnit.MINUTES) / 30;
+
+        if (jour >= 0 && jour < 7 && ligne >= 0 && ligne < nbCreneaux) {
+            planning[ligne][jour] = rdv;
+        }
+    }
+
+}

@@ -1,11 +1,5 @@
 package Station;
 
-/**
- *
- * @author Teddy.R
- */
-
-
 public abstract class Prestation {
     public enum CategVehicule {A,B,C}
     public CategVehicule categorie;
@@ -61,4 +55,7 @@ public abstract class Prestation {
     }
     
     public abstract double nettoyage();
+    
+    public abstract String versFichier(double prix);
+
 }

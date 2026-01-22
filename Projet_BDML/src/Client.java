@@ -1,9 +1,9 @@
 /*
- * TP     : Projet
+ * TP     : Projet fin de semestre
  * Classe : Client | Station de lavage
  * Nom    : Stéphane SINGERY, Yoann RABAHI, Teddy RAKOTOARIVELO
  * Groupe : ING1-APP-BDML2
- * Année  : 2026-01-01
+ * Année  : 2026-01-10
  */
 
 // Import packages
@@ -34,6 +34,8 @@ class Client {
         this.telephone    = telephone;    
         this.email        = null;         
     }
+    
+    // -----
 
     /**
      * Constructeur d'un client avec adresse électronique
@@ -58,6 +60,10 @@ class Client {
 
     public String getNom() {
         return this.nom;
+    }
+    
+    public int    getNumeroClient() {
+        return this.numeroClient;
     }
 
     // ----------------------------- SETTER
@@ -101,7 +107,27 @@ class Client {
         return this.telephone.compareTo(autreClient.telephone) > 0;
     }
     
-    // ------------- OVERRIDE / AFFICHER
+    // ------------- LECTURE / ECRITURE FICHIER
+    
+    /**
+     * Forme une chaîne de caractères composée des informations relatives à 
+     * un client.
+     */
+    public String versFichier() {
+
+        String ch = numeroClient 
+                + " : "
+                + nom + " : "
+                + telephone;
+
+        if (email != null) {
+            ch = ch + " : " + email;
+        }
+
+        return ch + System.lineSeparator();
+    }
+    
+    // ------------- OVERRIDE / AFFICHE
 
     @Override
     /**

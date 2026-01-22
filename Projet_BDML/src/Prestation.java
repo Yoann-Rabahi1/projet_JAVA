@@ -1,9 +1,9 @@
 /*
- * TP   : Projet
+ * TP   : Projet fin de semestre
  * Class: Prestation | Station de lavage
  * Name : Stéphane SINGERY, Yoann RABAHI, Teddy RAKOTOARIVELO
  * Group: ING1-APP-BDML2
- * Date : 2026-01-01
+ * Date : 2026-01-10
  */
 
 // Import packages
@@ -88,6 +88,8 @@ abstract class Prestation {
         double base = 20.0 * coefMajorationLavagePrelavage();
         return base + surcoutProduit();
     }
+    
+    // -----
 
     /**
      * Prix du séchage (base A = 10€).
@@ -95,6 +97,8 @@ abstract class Prestation {
     public double prixSechage() {
         return 10.0 * coefMajorationSechage();
     }
+    
+    // -----
 
     /**
      * Prix du prélavage (base A = 5€) + éventuel surcoût produit.
@@ -103,6 +107,8 @@ abstract class Prestation {
         double base = 5.0 * coefMajorationLavagePrelavage();
         return base + surcoutProduit();
     }
+    
+    // -----
 
     /**
      * Prix du nettoyage intérieur :
@@ -121,10 +127,21 @@ abstract class Prestation {
      * Prix total de la prestation (dépend du type de prestation).
      */
     public abstract double prixNettoyage();
+    
+    // -----
 
     /** 
-     * Afficher information
+     * Afficher information.
      */
     @Override
     public abstract String toString();
+    
+    // -----
+    
+    /**
+     * Forme une chaîne de caractère composées des informations relatives à
+     * une prestation.
+     */
+    public abstract String versFichier();
+
 }
